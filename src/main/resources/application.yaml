@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: online-menu
+  data:
+    mongodb:
+      uri: ${DB_URL}
+#mongoDB
