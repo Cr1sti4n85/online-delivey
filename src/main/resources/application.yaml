@@ -11,4 +11,6 @@ aws:
     key: ${AWS_ACCESS_KEY}
   secret:
     key: ${AWS_SECRET_KEY}
+  s3:
+    bucketname: online-delivery-bucket
 
