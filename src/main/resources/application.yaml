@@ -4,4 +4,11 @@ spring:
   data:
     mongodb:
       uri: ${DB_URL}
-#mongoDB
+#S3
+aws:
+  region: ${AWS_REGION}
+  access:
+    key: ${AWS_ACCESS_KEY}
+  secret:
+    key: ${AWS_SECRET_KEY}
+
