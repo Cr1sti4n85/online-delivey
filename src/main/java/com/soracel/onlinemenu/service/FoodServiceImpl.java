@@ -1,5 +1,9 @@
 package com.soracel.onlinemenu.service;
 
+import com.soracel.onlinemenu.entity.FoodEntity;
+import com.soracel.onlinemenu.io.FoodRequest;
+import com.soracel.onlinemenu.io.FoodResponse;
+import com.soracel.onlinemenu.repository.FoodRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -18,6 +22,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class FoodServiceImpl implements FoodService{
     private final S3Client s3Client;
+
+    private final FoodRepository foodRepository;
+
     @Value("${aws.s3.bucketname}")
     private String bucketName;
 
@@ -50,6 +57,36 @@ public class FoodServiceImpl implements FoodService{
                     .INTERNAL_SERVER_ERROR,
                     "Ocurrió un error al subir imagen");
         }
+    }
+
+    @Override
+    public FoodResponse addFood(FoodRequest req, MultipartFile file) {
+        FoodEntity newFoodEntity = convertToEntity(req);
+        String imgUrl = uploadFile(file);
+        newFoodEntity.setImageUrl(imgUrl);
+
+        newFoodEntity = foodRepository.save(newFoodEntity);
+        return convertToResponse(newFoodEntity);
+    }
+
+    private FoodEntity convertToEntity(FoodRequest request){
+        return FoodEntity.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .category(request.getCategory())
+                .price(request.getPrice())
+                .build();
+    }
+
+    private FoodResponse convertToResponse(FoodEntity entity){
+        return FoodResponse.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .description(entity.getDescription())
+                .category(entity.getCategory())
+                .price(entity.getPrice())
+                .imageUrl(entity.getImageUrl())
+                .build();
     }
 }
 
