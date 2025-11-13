@@ -5,6 +5,7 @@ import com.soracel.onlinemenu.io.FoodRequest;
 import com.soracel.onlinemenu.io.FoodResponse;
 import com.soracel.onlinemenu.repository.FoodRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FoodServiceImpl implements FoodService{
     private final S3Client s3Client;
 
