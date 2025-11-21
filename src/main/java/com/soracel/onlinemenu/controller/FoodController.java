@@ -7,6 +7,7 @@ import com.soracel.onlinemenu.io.FoodResponse;
 import com.soracel.onlinemenu.service.FoodService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,8 +22,8 @@ public class FoodController {
     private final FoodService foodService;
 
     @PostMapping
-    public FoodResponse addFood(@RequestPart("food") String foodString,
-                                @RequestPart("file")MultipartFile file){
+    public ResponseEntity<FoodResponse> addFood(@RequestPart("food") String foodString,
+                                  @RequestPart("file")MultipartFile file){
 
         ObjectMapper objectMapper = new ObjectMapper();
         FoodRequest request = null;
@@ -31,7 +32,8 @@ public class FoodController {
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato inváido");
         }
-         return foodService.addFood(request, file);
+         var createdFood = foodService.addFood(request, file);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFood);
 
     }
 

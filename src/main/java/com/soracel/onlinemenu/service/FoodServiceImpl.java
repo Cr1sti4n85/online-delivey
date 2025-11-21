@@ -4,7 +4,6 @@ import com.soracel.onlinemenu.entity.FoodEntity;
 import com.soracel.onlinemenu.io.FoodRequest;
 import com.soracel.onlinemenu.io.FoodResponse;
 import com.soracel.onlinemenu.repository.FoodRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -31,14 +30,12 @@ public class FoodServiceImpl implements FoodService{
 
     @Value("${aws.s3.bucketname}")
     private String bucketName;
-
     @Override
     public String uploadFile(MultipartFile file) {
         String filenameExt = file
                 .getOriginalFilename()
                 .substring(file.getOriginalFilename().lastIndexOf(".")+1);
         String key = UUID.randomUUID().toString()+"."+filenameExt;
-
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
@@ -46,7 +43,6 @@ public class FoodServiceImpl implements FoodService{
                     .acl("public-read")
                     .contentType(file.getContentType())
                     .build();
-
             PutObjectResponse response = s3Client
                     .putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
