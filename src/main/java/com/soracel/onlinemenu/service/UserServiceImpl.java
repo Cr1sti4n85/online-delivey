@@ -5,6 +5,7 @@ import com.soracel.onlinemenu.io.RegisterUserRequest;
 import com.soracel.onlinemenu.io.UserDataResponse;
 import com.soracel.onlinemenu.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService{
 
      private final UserRepository userRepository;
+     private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDataResponse registerUser(RegisterUserRequest request) {
@@ -23,7 +25,7 @@ public class UserServiceImpl implements UserService{
     private UserEntity convertToEntity(RegisterUserRequest req){
         return UserEntity.builder()
                 .email(req.getEmail())
-                .password(req.getPassword())
+                .password(passwordEncoder.encode(req.getPassword()))
                 .name(req.getName())
                 .build();
     }

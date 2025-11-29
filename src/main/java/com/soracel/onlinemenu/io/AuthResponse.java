@@ -1,12 +1,10 @@
 package com.soracel.onlinemenu.io;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @Getter
+@Builder
 public class AuthResponse {
     private String email;
     private String token;
