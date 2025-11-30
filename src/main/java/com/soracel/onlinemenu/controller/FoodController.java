@@ -30,7 +30,7 @@ public class FoodController {
         try {
             request  = objectMapper.readValue(foodString, FoodRequest.class);
         } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato inváido");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato inválido");
         }
          var createdFood = foodService.addFood(request, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFood);
