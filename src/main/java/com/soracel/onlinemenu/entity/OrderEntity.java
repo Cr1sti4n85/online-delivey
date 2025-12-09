@@ -25,7 +25,7 @@ public class OrderEntity {
     private List<OrderItem> orderItems;
     private double amount;
     private String paymentStatus;
-    private String orderId;
+    private String paymentOrderId;
     private String signature;
     private String orderStatus;
 }
