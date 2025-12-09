@@ -19,3 +19,7 @@ jwt:
   secret:
     key: ${JWT_SECRET}
 
+#payment
+payment:
+  token: ${MP_ACCESS_TOKEN}
+
