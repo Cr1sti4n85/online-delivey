@@ -9,9 +9,11 @@ import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
 import com.soracel.onlinemenu.entity.OrderEntity;
+import com.soracel.onlinemenu.exceptions.OrderNotFoundException;
 import com.soracel.onlinemenu.io.OrderDetails;
 import com.soracel.onlinemenu.io.OrderRequest;
 import com.soracel.onlinemenu.io.OrderResponse;
+import com.soracel.onlinemenu.repository.CartRespository;
 import com.soracel.onlinemenu.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.HmacUtils;
@@ -35,6 +37,8 @@ public class OrderServiceImpl implements OrderService{
 
     private final OrderRepository orderRepository;
     private final UserService userService;
+    private final CartRespository cartRespository;
+
     @Value("${payment.token}")
     private String mpAccessToken;
 
@@ -117,6 +121,23 @@ public class OrderServiceImpl implements OrderService{
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid signature");
         }
 
+    }
+
+    @Override
+    public void updatePayment(Map<String, String> paymentData, String status){
+
+        String preferenceId = paymentData.get("preference");
+        OrderEntity existingOrder = orderRepository
+                .findByPreferenceId(preferenceId)
+                .orElseThrow(OrderNotFoundException::new);
+
+        existingOrder.setPaymentId(paymentData.get("payment_id"));
+        existingOrder.setPaymentStatus(paymentData.get("payment_status"));
+
+        orderRepository.save(existingOrder);
+        if (status.equalsIgnoreCase("paid")){
+            cartRespository.deleteByUserId(existingOrder.getUserId());
+        }
     }
 
     private OrderEntity convertToOrderEntity(OrderRequest req){

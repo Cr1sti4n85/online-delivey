@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/orders")
@@ -33,4 +35,12 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PutMapping
+    public ResponseEntity<Void> updatePayment(@RequestBody  Map<String, String> paymentData,
+                              @RequestBody String status){
+
+        orderService.updatePayment(paymentData, status);
+
+        return ResponseEntity.noContent().build();
+    }
 }
