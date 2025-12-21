@@ -84,7 +84,7 @@ public class OrderServiceImpl implements OrderService{
 
         return OrderDetails.builder()
                 .order(orderResponse)
-                .paymentUrl(preference.getSandboxInitPoint())
+                .paymentUrl(preference.getInitPoint())
                 .build();
     }
 
@@ -140,6 +140,35 @@ public class OrderServiceImpl implements OrderService{
         }
     }
 
+    @Override
+    public List<OrderResponse> getUserOrders() {
+        String loggedInUserId = userService.findByUserId();
+        List<OrderEntity> orderList =  orderRepository.findByUserId(loggedInUserId);
+
+        return orderList.stream().map(this::convertToOrderResponse).toList();
+    }
+
+    @Override
+    public void removeOrder(String orderId) {
+        orderRepository.deleteById(orderId);
+    }
+
+    @Override
+    public List<OrderResponse> getAllOrdersFromUsers() {
+        List<OrderEntity> orders = orderRepository.findAll();
+        return orders.stream().map(this::convertToOrderResponse).toList();
+    }
+
+    @Override
+    public void updateOrderStatus(String orderId, String status) {
+        OrderEntity order = orderRepository
+                .findById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
+
+        order.setOrderStatus(status);
+        orderRepository.save(order);
+    }
+
     private OrderEntity convertToOrderEntity(OrderRequest req){
         return OrderEntity.builder()
                 .userAddress(req.getUserAddress())
@@ -162,6 +191,7 @@ public class OrderServiceImpl implements OrderService{
                 .preferenceId(order.getPreferenceId())
                 .orderStatus(order.getOrderStatus())
                 .orderStatus(order.getOrderStatus())
+                .orderedItems(order.getOrderItems())
                 .build();
     }
 
