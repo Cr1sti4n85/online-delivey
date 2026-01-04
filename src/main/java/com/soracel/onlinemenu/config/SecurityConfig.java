@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers( "/api/users", "/api/auth", "/api/foods/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/orders/payment").permitAll()
+                        .requestMatchers("/api/orders/payment", "/api/orders/all", "/api/orders/status/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

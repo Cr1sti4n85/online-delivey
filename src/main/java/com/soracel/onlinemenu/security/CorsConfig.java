@@ -15,10 +15,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                         .allowCredentials(true)
                         .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
-                        .allowedOrigins("http://localhost:5173");
+                        .allowedOrigins("http://localhost:5173", "https://api.mercadopago.com");
             }
         };
     }

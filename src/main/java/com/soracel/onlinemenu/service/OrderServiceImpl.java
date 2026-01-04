@@ -52,23 +52,22 @@ public class OrderServiceImpl implements OrderService{
 
         PreferenceBackUrlsRequest backUrls =
                 PreferenceBackUrlsRequest.builder()
-                        .success("localhost:3000/success")
-                        .pending("localhost:3000/pending")
-                        .failure("localhost:3000/failure")
+                        .success("localhost:5173/payment/success")
+                        .pending("localhost:5173/payment/pending")
+                        .failure("localhost:5173/payment/failure")
                         .build();
+        List<PreferenceItemRequest> items = new ArrayList<>();
 
         PreferenceItemRequest itemRequest =
                 PreferenceItemRequest.builder()
                         .id(newOrder.getId())
-                        .title("Food delivery")
+                        .title("Delivery")
                         .description("El mejor delivery")
-                        .pictureUrl("http://picture.com/PS5")
-                        .categoryId("Food")
+                        .categoryId("Comida")
                         .quantity(1)
                         .currencyId("CLP")
                         .unitPrice(new BigDecimal(newOrder.getAmount()))
                         .build();
-        List<PreferenceItemRequest> items = new ArrayList<>();
         items.add(itemRequest);
 
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
@@ -84,7 +83,7 @@ public class OrderServiceImpl implements OrderService{
 
         return OrderDetails.builder()
                 .order(orderResponse)
-                .paymentUrl(preference.getInitPoint())
+                .paymentUrl(preference.getSandboxInitPoint())
                 .build();
     }
 
@@ -103,15 +102,15 @@ public class OrderServiceImpl implements OrderService{
         if (ts == null || v1 == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid x-signature format");
         }
+        System.out.println("ts: " + ts);
+        System.out.println("v1: " + v1);
 
         //encrypt and compare
-        String signedTemplate = "id:" + dataId +
-                        ";request-id:" + reqId +
-                        ";ts:" + ts;
+        String signedTemplate = "id:" + dataId + ";request-id:" + reqId + ";ts:" + ts+";";
 
 
-        String cypheredSignature = new HmacUtils("HmacSHA256", "aca va la clave secreta").hmacHex(signedTemplate);
-
+        String cypheredSignature = new HmacUtils("HmacSHA256", "2e3f9cdba04eaa3dd3d16ac2b056eca382440d3f411eb45185ac03875962b34a").hmacHex(signedTemplate);
+        System.out.println("cypheredSignature = " + cypheredSignature);
         boolean valid = MessageDigest.isEqual(
                 cypheredSignature.getBytes(StandardCharsets.UTF_8),
                 v1.getBytes(StandardCharsets.UTF_8)
